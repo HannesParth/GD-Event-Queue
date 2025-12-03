@@ -256,7 +256,10 @@ if Input.is_action_just_pressed( "ui_up" ):
 
 And voila! Any skippable events that come after calling `EventQueue.skip()` will be skipped over.
 
-Okay, now how do you stop skipping.. Easy! skipping will be disabled on reaching an unskippable event *or* on reaching another `EVENT_canSkip` event which disables skipping (has false instead of true on init).
+Okay, now how do you stop skipping.. Easy! skipping will be disabled on reaching an unskippable event *or* on reaching another `EVENT_canSkip` event which disables skipping (has false instead of true on init).\
+
+> [!NOTE]
+> Skipping is also automatically disabled after a queue is emptied/finished. 
 
 ## Special Thanks
 
