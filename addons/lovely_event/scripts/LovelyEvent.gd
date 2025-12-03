@@ -53,8 +53,10 @@ func queue( new_event : EVENT, event_queue : EventQueue = null ) -> void:
 		var has_queued_event : bool = default_queue_check.call( new_event );
 		if not has_queued_event:
 			main_queue.queue( new_event );
+			new_event.current_queue = main_queue;
 	else:
 		event_queue.queue( new_event );
+		new_event.current_queue = event_queue;
 
 
 func get_queue_by_ID( queue_id : String ) -> EventQueue:

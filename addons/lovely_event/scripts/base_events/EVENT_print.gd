@@ -14,3 +14,7 @@ func _init( ...args ) -> void:
 func execute( _looping : bool, _dt : float ) -> RETURNTYPE:
 	print( print_text );
 	return RETURNTYPE.FINISHED;
+
+
+func on_skip() -> void:
+	print( print_text );

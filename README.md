@@ -208,8 +208,9 @@ class_name EVENT_wait
 var wait_time : float
 
 ## waits [time] seconds before continuing queue.
-func _init( time : float = 1.0 ) -> void:
+func _init( time : float = 1.0, skippable : bool = false ) -> void:
 	wait_time = time
+	is_skippable = skippable
 	super._init()
 
 
@@ -230,6 +231,33 @@ ran into an error? that's what `RETURNTYPE.ERROR` is for! keeping events from ne
 
 And that's about it! it's quite a simple plugion/addon, but what it lacks in substance it makes up for in what it can achieve.
 
+## (NEW!) Event Skipping!
+
+Event skipping is a feature added with v1.1! but what is it and how does it work?
+
+Event skipping is a system which allows you to skip *skippable* events. But what classifies an event as skippable?\
+For an event to be skippable, it must fulfill two criteria.\
+1. it must have `is_skippable` set to true (which is is, by default)
+2. it must have the method/function `on_skip()` created in the event.
+If and **ONLY** if those two criteria are fulfilled, will the event be able to be skipped. all "pre-packaged" `EVENT`s have been updated to reflect this new addition and to be an example for anyone trying to make their own skippable `EVENT`s. 
+
+Now that you have that set up, you can work on the next part.. actually skipping events. To do this you need to first enable the ability to skip within the queue. To do this you can queue `EVENT_canSkip`, eg.
+
+```gdscript
+EVENT_canSkip.new( true ).queue()
+```
+
+next, simply call the `EventQueue` method `EventQueue.skip()` In a game, for example, you can do something like this:
+
+```gdscript
+if Input.is_action_just_pressed( "ui_up" ):
+	example_queue.skip();
+```
+
+And voila! Any skippable events that come after calling `EventQueue.skip()` will be skipped over.
+
+Okay, now how do you stop skipping.. Easy! skipping will be disabled on reaching an unskippable event *or* on reaching another `EVENT_canSkip` event which disables skipping (has false instead of true on init).
+
 ## Special Thanks
 
 I'd like to thank my friends in some private dev servers for helping me not just with this iteration, but various past iterations of the same idea that eventually brought the project
@@ -239,5 +267,3 @@ Extremely special thanks to my friend [TreeMitri](https://github.com/TreeMitri) 
 but an entire class with its own ernum return type.
 
 Thanks to anyone who actually read all this! I wish you the best of luck and hope these scripts help your future endeavors!
-
-

@@ -18,7 +18,10 @@ enum RETURNTYPE { FINISHED, UNFINISHED, ERROR }
 
 ## event ID, generated automatically via class name
 var EID : String;
+var current_queue : EventQueue;
 var is_current_event : bool = false;
+## by default, [EVENT]s are skippable as long as they have the method [method EVENT.on_skip] created.
+var is_skippable = true;
 
 
 func _init() -> void:
@@ -30,6 +33,7 @@ func _init() -> void:
 ## if no [param event_queue] is given, sends it to default queue ([member LovelyEvent.main_queue] by default).
 func queue( event_queue : EventQueue = null ) -> void:
 	LovelyEvent.queue( self, event_queue );
+	current_queue = event_queue;
 
 
 ## [b]automatically[/b] called function to execute the event.[br]

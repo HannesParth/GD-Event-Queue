@@ -15,6 +15,9 @@ var is_running : bool = false; ## shows whether [EVENT]s are being run in this q
 var is_essential : bool = false; ## cannot be deleted via [method LovelyEvent.delete_queue] if true.
 var event_queue : Array[ EVENT ] = []; ## queue for events.
 
+var can_skip : bool = false; ## determines whether upcoming [EVENT]s can be skipped or not.
+var is_skipping : bool = false; ## shows whether [EVENT]s are being skipped currently or not.
+
 var ignore_main_queue : bool = false; ## sets whether queue runs along-side the main queue or not.
 var runs_while_pause_all : bool = false; ## sets whether queue runs while [LovelyEvent] is paused.
 
@@ -69,6 +72,7 @@ func check_pause_check() -> bool:
 ## adds [param event] to end of queue.
 func queue( event : EVENT ) -> void:
 	event_queue.append( event );
+	event.current_queue = self;
 	is_empty = false;
 
 
@@ -83,23 +87,33 @@ func update( _dt : float ) -> void:
 		# if it can, updates
 		is_running = true;
 		event_queue[0].is_current_event = true;
-		var event_return_type : EVENT.RETURNTYPE = event_queue[0].execute( is_looping, _dt );
-		if event_return_type == EVENT.RETURNTYPE.UNFINISHED:
-			is_looping = true;
-			is_running = false;
-		elif event_return_type == EVENT.RETURNTYPE.FINISHED: # finished event
-			is_looping = false;
-			remove_top_event();
-		elif event_return_type == EVENT.RETURNTYPE.ERROR:
-			push_error( "error with event of ID \"",event_queue[0].EID,"\" in queue ",name );
-			is_looping = false;
-			remove_top_event();
+		if is_skipping:
+			if not can_skip: is_skipping = false;
+			if event_queue[0].has_method( "on_skip" ) and event_queue[0].is_skippable:
+				event_queue[0].on_skip();
+				remove_top_event();
+			else:
+				is_skipping = false;
 		else:
-			push_error( "EVENTs should always return an EVENT.RETURNTYPE! please do this!" );
-			is_looping = false;
-			remove_top_event();
+			var event_return_type : EVENT.RETURNTYPE = event_queue[0].execute( is_looping, _dt );
+			if event_return_type == EVENT.RETURNTYPE.UNFINISHED:
+				is_looping = true;
+				is_running = false;
+			elif event_return_type == EVENT.RETURNTYPE.FINISHED: # finished event
+				is_looping = false;
+				remove_top_event();
+			elif event_return_type == EVENT.RETURNTYPE.ERROR:
+				push_error( "error with event of ID \"",event_queue[0].EID,"\" in queue ",name );
+				is_looping = false;
+				remove_top_event();
+			else:
+				push_error( "EVENTs should always return an EVENT.RETURNTYPE! please do this!" );
+				is_looping = false;
+				remove_top_event();
 	else:
 		is_running = false;
+		is_skipping = false;
+		can_skip = false;
 
 
 ## removes top event from the [member event_queue].
@@ -120,6 +134,12 @@ func remove_specific_event( event : EVENT ) -> void:
 		if event.is_current_event: event.is_current_event = false;
 		event_queue.erase( event );
 	is_empty = event_queue.is_empty();
+
+
+## begins skipping [EVENT]s
+func skip() -> void:
+	if can_skip:
+		is_skipping = true;
 
 
 ## empties/clears the [member event_queue].
