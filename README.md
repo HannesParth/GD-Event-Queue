@@ -4,6 +4,20 @@
 
 A light-weight but flexible **event sequencer** add-on for Godot based off my original Love2D event sequencer system, hence the name!
 
+## This is a fork!
+
+This fork was made because [LovelyEvent](https://github.com/Schwegg/Lovely-Event) is the only seemingly competent and flexible event queue implementation for Godot I've been able to find, but it is not using abstract classes when it could and is in huge parts not compliant with the GDScript style guide. Also, I've been triggered by the event naming scheme. I mean, capital-case `EVENT`, followed by its subtype in camel-case, with an underscore in between just for that sprinkle of snake-case? It hurts my soul.
+
+The immediate plan is to rewrite the syntax and documentation comments.
+
+A more long-term plan is to try and add threading and introduce threaded event queues. This is not guaranteed to come.
+
+
+Everything after this line is Schwegg's original README.
+
+---
+
+
 ## Backstory
 
 I've been using different itterations of this addon at the center of my projects since I started gamedev around 2017. it started as a
