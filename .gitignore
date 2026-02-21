@@ -1,25 +1,3 @@
 # Godot 4+ specific ignores
 .godot/
-.nomedia
-
-# Godot-specific ignores
-.import/
-export.cfg
-export_credentials.cfg
-
-# Imported translations (automatically generated from CSV files)
-*.translation
-
-# Mono-specific ignores
-.mono/
-data_*/
-mono_crash.*.json
-
-*.uid
-project.godot
-main_scene.tscn
-lovely-event.svg
-lovely-event.svg.import
-social-preview.clip
-social-preview.png
-social-preview.png.import
+/android/
