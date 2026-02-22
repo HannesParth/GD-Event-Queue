@@ -12,7 +12,7 @@ extends RefCounted
 ## event.queue( example_event_queue );
 ## [/codeblock]
 ## [code]example_event_queue[/code] can be [Null] as well to send to
-## default queue, [member EventHub.main_queue].
+## default queue, [member EventHub._main_queue].
 
 ## return type for [method execute] function.
 enum Result { FINISHED, UNFINISHED, ERROR }
@@ -36,7 +36,7 @@ func _log_error(msg: String) -> void:
 
 
 ## queues self into given [param event_queue].[br]
-## if no [param event_queue] is given, sends it to default queue ([member EventHub.main_queue] by default).
+## if no [param event_queue] is given, sends it to default queue ([member EventHub._main_queue] by default).
 func queue(event_queue: EventQueue = null) -> void:
 	EventHub.queue(self, event_queue)
 	current_queue = event_queue;

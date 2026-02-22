@@ -16,7 +16,7 @@ var is_looping: bool = false
 var is_running: bool = false
 
 ## Cannot be deleted via [method EventHub.delete_queue] if true.
-var is_essential: bool = false;
+var is_essential: bool = false
 
 ## Sets whether queue runs along-side the main queue. [br]
 ## Settings this to false means this queue is blocked from executing new events
@@ -50,18 +50,14 @@ func _init(
 	EventHub.add_queue(queue_id, self)
 
 
-func _log_error(msg: String) -> void:
-	printerr("[%s]: %s" % [id, msg])
-	push_error("[%s]: %s" % [id, msg])
-
-
 ## Adds [param event] to the end of the queue. [br]
-## Also sets the Events current_queue to this one.
-func queue(event : Event) -> void:
+## Also sets the [Event.current_queue] to this one.
+func queue(event: Event) -> void:
 	_event_queue.append(event)
 	event.current_queue = self
 
 
+## Returns [code]true[/code] if this queue is empty.
 func is_empty() -> bool:
 	return _event_queue.is_empty()
 
@@ -70,7 +66,7 @@ func is_empty() -> bool:
 ## It must return a [code]bool[/code]. [br]
 ## This is an AND check. All checks must be true for the queue to update.
 func add_update_check(check_func: Callable) -> void:
-	extra_checks.append(check_func);
+	extra_checks.append(check_func)
 
 
 #region Update Checks
@@ -90,7 +86,7 @@ func _is_update_allowed() -> bool:
 
 
 func _main_queue_allows_update() -> bool:
-	return ignore_main_queue || !EventHub.main_queue.is_running
+	return ignore_main_queue || !EventHub._main_queue.is_running
 
 
 func _pause_allows_update() -> bool:
@@ -104,17 +100,17 @@ func _pause_allows_update() -> bool:
 #region Event Execution
 func _execute_next(delta: float) -> void:
 	if _event_queue.is_empty():
-		is_running = false;
-		is_skipping = false;
-		can_skip = false;
-	
-	if not _is_update_allowed(): 
 		is_running = false
-		return;
+		is_skipping = false
+		can_skip = false
 	
-	is_running = true;
+	if !_is_update_allowed(): 
+		is_running = false
+		return
+	
+	is_running = true
 	var event: Event = _event_queue[0]
-	event.is_current_event = true;
+	event.is_current_event = true
 	
 	if _handle_skipping(event):
 		return
@@ -193,7 +189,7 @@ func remove_top_event(schedule_next: bool) -> void:
 		_schedule_next_event()
 
 
-## Access point to remove an [Event] from this queue.
+## Removes a given [Event] from this queue.
 func remove_event(event: Event) -> void:
 	if !_event_queue.has(event):
 		return
@@ -224,10 +220,13 @@ func has_event_type_queued(event_class_type: Variant) -> bool:
 	return false
 
 
-## Deletes this queue from the EventHub, if it is not essential.
+## Deletes this queue from the EventHub, if it is not essential. [br]
+## See [method EventHub.delete_queue_by_id].
 func delete() -> void:
-	if is_essential:
-		_log_error(EventHub.ERR_TRY_DELETE_ESSENTIAL)
-		return
-	
-	EventHub.delete_queue(self)
+	EventHub.delete_queue_by_id(id)
+
+
+# Utility method for formatting and logging errors.
+func _log_error(msg: String) -> void:
+	printerr("[%s]: %s" % [id, msg])
+	push_error("[%s]: %s" % [id, msg])

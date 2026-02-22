@@ -8,12 +8,18 @@ A light-weight but flexible **event sequencer** add-on for Godot based off my or
 
 This fork was made because [LovelyEvent](https://github.com/Schwegg/Lovely-Event) is the only seemingly competent and flexible event queue implementation for Godot I've been able to find, but it is not using abstract classes when it could and is in huge parts not compliant with the GDScript style guide. Also, I've been triggered by the event naming scheme. I mean, capital-case `EVENT`, followed by its subtype in camel-case, with an underscore in between just for that sprinkle of snake-case? It hurts my soul.
 
-The immediate plan is to rewrite the syntax and documentation comments.
+~~The immediate plan is to rewrite the syntax and documentation comments.~~ \
+DONE. Syntax and documentation comments have been practically completely overhauled. Some logic has been fixed based on my understanding of Event Queues, and some bugs have been found, which I will notify Schwegg of. \
+Schwegg's awesome comments in `TempEventQueue` have been kept and really tempted me to rename it to `SuicidalEventQueue`.
 
 A more long-term plan is to try and add threading and introduce threaded event queues. This is not guaranteed to come.
 
 
 Everything after this line is Schwegg's original README.
+
+> [!WARNING]
+> Large parts of Schwegg's documentation here are no longer syntax-accurate after my overhaul, and I don't know if I will get the time to rewrite it. \
+> Some examples: `EVENT.RETURNTYPE` is now `Event.Result`, and the autoload `LovelyEvent` is now `EventHub`.
 
 ---
 
